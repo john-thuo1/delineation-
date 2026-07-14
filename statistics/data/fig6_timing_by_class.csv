@@ -1,0 +1,8 @@
+class,feature,lead,healthy_mean,disease_mean,shift,fig6_expected
+rbbb,QRSdur,II,125.9,131.2,5.3,up (wider QRS)
+lbbb,QRSdur,II,125.9,137.8,11.9,up (wider QRS)
+avblock,PRint,II,187.4,280.8,93.5,up (prolonged PR)
+iab,Pdur,II,124.8,132.5,7.7,up (wider P)
+lae,Pdur,II,124.8,135.5,10.7,up (wider P)
+fam,Pdur,V6,119.8,124.1,4.2,up (wider/abnormal P)
+mi,QTint,V4,363.3,375.3,12.0,up (prolonged QT)

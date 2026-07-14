@@ -1,0 +1,56 @@
+# ============================================================================
+#  .gitignore — MedalCare-XL ECG delineation project
+#  Strategy: keep code, configs, small report-featured tables, and the reports.
+#  Ignore raw source data, virtual envs, work-in-progress, and the large
+#  regenerable pipeline outputs.
+# ============================================================================
+
+# ── OS / editor junk ────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# ── Python virtual environment (regenerate with pip install) ────────────────
+project_dissertation/
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# ── Work in progress: not ready to push ─────────────────────────────────────
+Dissertation/
+
+# ── Raw source data (obtain from the MedalCare-XL release, ~27 GB) ──────────
+WP2_largeDataset_Noise/
+WP2_largeDataset_ParameterFiles/
+
+# ── Third-party toolbox (clone separately from KIT-IBT/ECGdeli) ─────────────
+ECG_TOOL/
+
+# ── Staging / scratch ───────────────────────────────────────────────────────
+upload/
+archive/
+
+# ── Large regenerable pipeline outputs (> 100 MB — cannot be pushed to GitHub)
+# Master fiducials: produced by ECGdeli (MATLAB). NOT reproducible from the repo
+# alone — host via Git LFS or an external link (see README) if reproducibility matters.
+ecgdeli_labelling/data/primary/medalcare_fiducials_ecgdeli.csv
+
+# Training labels: regenerate with dataset_curation/scripts/build_master.py
+dataset_curation/data/assembled/master_labels.csv
+
+# Global reconciled table (regenerate with build_reconciled_global.py)
+dataset_curation/data/global/reconciled_global_fiducials.csv
+
+# NeuroKit cross-check intermediates (regenerate with the crosscheck scripts)
+ecgdeli_labelling/data/neurokit_crosscheck/intermediates/consensus_disagreements.csv
+ecgdeli_labelling/data/neurokit_crosscheck/intermediates/consensus_peak_disagreements.csv
+ecgdeli_labelling/data/neurokit_crosscheck/intermediates/consensus_review_targets.csv
+
+# ── Model training artifacts (regenerated during training) ──────────────────
+ml_modelling/checkpoints/
+ml_modelling/results/
+ml_modelling/data/
+
+

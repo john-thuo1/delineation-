@@ -1,0 +1,6 @@
+feature,mean_abs_diff_mV,lead_sign_agreement,n_records
+Pamp,0.025,12/12,200
+Qamp,0.05,8/12,200
+Ramp,0.193,11/12,200
+Samp,0.029,11/12,200
+Tamp,0.06,12/12,200

@@ -1,0 +1,16 @@
+NeuroKit2 (dwt) vs ECGdeli  -  12 lead(s), 16848 records
+
+fiducial     agree%        n  medianΔ   meanΔ  (ms)
+p_onset       55.7%  1832231    26.0   34.5
+p_peak        64.9%  1887534     4.0   -2.1
+p_offset      60.0%  1887390   -20.0  -27.9
+qrs_onset     21.1%  1816961   -44.0  -46.2
+q_peak        30.6%  1931212   -24.0  -35.9
+r_peak        46.7%  2000374     0.0   -8.5
+s_peak        32.8%  1982752     2.0   36.3
+qrs_offset    44.0%  1523421   -12.0  -10.3
+t_onset       34.6%  1543046    56.0   34.2
+t_peak        82.3%  1543305    -2.0  -22.1
+t_offset      81.5%  1521449    -8.0  -25.5
+
+beats with >=1 disagreement: 1987074  -> consensus_disagreements.csv

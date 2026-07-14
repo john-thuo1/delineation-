@@ -1,0 +1,6 @@
+feature,lead,class,healthy_mV,disease_mV,shift_mV,n
+Qamp,II,mi,-0.021,0.137,0.158,100
+Ramp,V2,mi,-2.41,-2.899,-0.489,100
+Ramp,II,lae,0.753,0.754,0.001,100
+Pamp,aVL,fam,0.043,0.008,-0.035,100
+Pamp,V6,fam,0.076,0.06,-0.016,100
