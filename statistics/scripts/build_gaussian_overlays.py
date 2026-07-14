@@ -94,19 +94,16 @@ plt.close(); print("saved fig_repro_timing_leadII.png")
 
 # ================= AMPLITUDES (recomputed from signals) ========================================
 idx = {r["record_id"]: r for r in csv.DictReader(open(SIGIDX, newline=""))}
-# collect sinus lead-II peak positions per record from master_labels (first N_AMP sinus records)
-want, beats = [], {}
+# reproducible random sample of sinus records (fixed seed 2026, sorted eligible list) — matches
+# build_amplitudes_alllead.py so the figure and Table 8 use the same recordings.
+elig = sorted(r for r, v in idx.items() if v["disease_class"] == "sinus")
+want = np.random.default_rng(2026).choice(elig, size=min(N_AMP, len(elig)), replace=False).tolist()
+wantset = set(want); beats = {}
 for ch in pd.read_csv(MASTER, usecols=["record_id", "disease_class", "lead", "qrs_onset_sample"] + list(PK.values()),
                       dtype=str, na_filter=False, chunksize=400000):
-    ch = ch[(ch.disease_class == "sinus") & (ch.lead == "II")]
+    ch = ch[(ch.disease_class == "sinus") & (ch.lead == "II") & (ch.record_id.isin(wantset))]
     for rid, g in ch.groupby("record_id"):
-        if rid not in beats and len(want) < N_AMP and rid in idx:
-            want.append(rid)
-        if rid in want or len(want) < N_AMP:
-            beats.setdefault(rid, []).extend(g.to_dict("records"))
-    if len(want) >= N_AMP and all(r in beats for r in want):
-        break
-want = want[:N_AMP]
+        beats.setdefault(rid, []).extend(g.to_dict("records"))
 LROW = {"I": 0, "II": 1, "III": 2, "aVR": 3, "aVL": 4, "aVF": 5,
         "V1": 6, "V2": 7, "V3": 8, "V4": 9, "V5": 10, "V6": 11}
 amp_rec = {f: [] for f in AMP}
@@ -141,8 +138,8 @@ for a, f, ti in zip(ax.ravel(), AMP, ATITLE):
     panel(a, v, (T6A[f], sd_proxy), (PPA[f], sd_proxy), ti, "mV")
 ax.ravel()[5].axis("off")
 fig.suptitle("Healthy sinus, lead II amplitudes (one median per record): our density vs published Table 6 "
-             "(dashed) and preprint Figure 5 (solid).\nThe two references agree on amplitudes; both overlap "
-             "our densities (P and Q run low, as expected for the simulated beats).", fontsize=11)
+             "(dashed) and preprint Figure 5 (solid).\nThe two references agree on amplitudes and both overlap "
+             "our densities; the P wave runs slightly low, while Q, R, S and T track the references.", fontsize=11)
 plt.tight_layout()
 for d in (FIG, REPFIG):
     plt.savefig(os.path.join(d, "fig_repro_amp_leadII.png"), dpi=140, bbox_inches="tight")

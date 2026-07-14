@@ -28,7 +28,8 @@ cols = ["disease_class","lead","record_id","qrs_onset_sample"]+list(PK.values())
 df = pd.read_csv(FID, usecols=cols, na_values=["","None"])
 d2 = df[(df.disease_class=="sinus")&(df.lead=="II")]
 man = {r["record_id"]: r["path_raw"] for r in csv.DictReader(open(MAN)) if r["disease_class"]=="sinus"}
-recs = [r for r in d2.record_id.unique() if r in man][:N]
+eligible = sorted(r for r in d2.record_id.unique() if r in man)
+recs = np.random.default_rng(2026).choice(eligible, size=min(N, len(eligible)), replace=False).tolist()
 
 amp_rec = {f:[] for f in AMP}
 for rid, g in d2[d2.record_id.isin(recs)].groupby("record_id"):
