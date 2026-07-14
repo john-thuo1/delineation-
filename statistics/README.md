@@ -46,18 +46,19 @@ falls outside it; for every other feature the three overlap.
 ## Amplitudes (sinus, lead II — Figure 5 amplitude panels)
 
 Amplitude = signal at the fiducial peak minus the pre-QRS baseline, per-signal median then cohort
-mean over 200 sampled recordings (`amplitudes_sinus_leadII.csv`):
+mean over a reproducible random sample of 200 recordings, seed 2026 (`amplitudes_sinus_leadII.csv`):
 
 | Feature | Ours (mV) | Table 6 | Preprint Fig 5 (est.) |
 |---|---|---|---|
-| P amplitude | 0.065 | 0.09 | ~0.10 |
-| Q amplitude | 0.012 | 0.06 | ~0.05 |
-| R amplitude | 0.720 | 0.59 | ~0.70 |
-| S amplitude | −0.185 | −0.20 | ~−0.20 |
-| T amplitude | 0.466 | 0.49 | ~0.45 |
+| P amplitude | 0.07 | 0.09 | ~0.10 |
+| Q amplitude | 0.052 | 0.06 | ~0.05 |
+| R amplitude | 0.541 | 0.59 | ~0.70 |
+| S amplitude | −0.197 | −0.20 | ~−0.20 |
+| T amplitude | 0.468 | 0.49 | ~0.45 |
 
-R, S and T amplitudes match both references (R actually sits on the preprint's ~0.70); P and Q
-run low, consistent with the residual P wave and small Q of the simulated beats.
+S and T amplitudes match both references; R sits close to Table 6 (0.54 vs 0.59) and below the
+preprint's ~0.70; the P wave runs slightly low while Q now agrees closely with Table 6, consistent
+with the residual P wave of the simulated beats.
 
 ## Per-class timing (Figure 6)
 
@@ -77,18 +78,18 @@ expected direction (`fig6_timing_by_class.csv`):
 ### Figure 6 amplitude panels (healthy vs disease)
 
 The amplitude features Figure 6 highlights per disease (`fig6_amplitudes_by_class.csv`), computed
-as signal-at-peak minus pre-QRS baseline, per-signal median then cohort mean over 100 recordings:
+as signal-at-peak minus pre-QRS baseline, per-signal median then cohort mean over a reproducible random sample of 100 recordings per class (seed 2026):
 
 | Feature (lead) | Class | Healthy (mV) | Disease (mV) | Shift |
 |---|---|---|---|---|
-| Q amplitude (II) | MI | −0.021 | +0.137 | +0.158 |
-| R amplitude (V2) | MI | −2.410 | −2.899 | −0.489 |
-| R amplitude (II) | LAE | 0.753 | 0.754 | +0.001 |
-| P amplitude (aVL) | FAM | 0.043 | 0.008 | −0.035 |
-| P amplitude (V6) | FAM | 0.076 | 0.060 | −0.016 |
+| Q amplitude (II) | MI | 0.046 | 0.133 | +0.087 |
+| R amplitude (V2) | MI | −1.494 | −2.076 | −0.582 |
+| R amplitude (II) | LAE | 0.549 | 0.496 | −0.053 |
+| P amplitude (aVL) | FAM | 0.035 | 0.014 | −0.021 |
+| P amplitude (V6) | FAM | 0.084 | 0.049 | −0.035 |
 
 MI alters the Q (lead II) and R (V2) amplitudes, and FAM reduces the P-wave amplitude (aVL, V6) —
-both consistent with Figure 6. LAE leaves the R amplitude unchanged (its signature is in the P
+both consistent with Figure 6. LAE leaves the R amplitude little changed (its signature is in the P
 wave, not R). The V2 R amplitude is negative because V2 carries a predominantly negative
 (rS/QS) QRS in these simulated signals, so the labelled R sits below baseline.
 
