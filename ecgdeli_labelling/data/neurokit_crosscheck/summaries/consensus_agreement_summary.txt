@@ -1,16 +1,18 @@
 NeuroKit2 (dwt) vs ECGdeli  -  12 lead(s), 16848 records
+per-fiducial timing difference (NeuroKit2 minus ECGdeli). 2s_CSE = CSE Working Party 1985
+acceptance limit (boundaries only); SD<=CSE marks whether the inter-tool SD is within it.
 
-fiducial     agree%        n  medianΔ   meanΔ  (ms)
-p_onset       55.7%  1832231    26.0   34.5
-p_peak        64.9%  1887534     4.0   -2.1
-p_offset      60.0%  1887390   -20.0  -27.9
-qrs_onset     21.1%  1816961   -44.0  -46.2
-q_peak        30.6%  1931212   -24.0  -35.9
-r_peak        46.7%  2000374     0.0   -8.5
-s_peak        32.8%  1982752     2.0   36.3
-qrs_offset    44.0%  1523421   -12.0  -10.3
-t_onset       34.6%  1543046    56.0   34.2
-t_peak        82.3%  1543305    -2.0  -22.1
-t_offset      81.5%  1521449    -8.0  -25.5
+fiducial           n   meanD      SD  medianD  2s_CSE  SD<=CSE  (ms)
+p_onset      1832231    34.5    64.2     26.0    10.2       no
+p_peak       1887534    -2.1    53.1      4.0      --       --
+p_offset     1887390   -27.9    48.5    -20.0    12.7       no
+qrs_onset    1816961   -46.2    53.4    -44.0     6.5       no
+q_peak       1931212   -35.9    53.1    -24.0      --       --
+r_peak       2000374    -8.5    26.2      0.0      --       --
+s_peak       1982752    36.3    99.7      2.0      --       --
+qrs_offset   1523421   -10.3    43.9    -12.0    11.6       no
+t_onset      1543046    34.2    61.5     56.0      --       --
+t_peak       1543305   -22.1    67.3     -2.0      --       --
+t_offset     1521449   -25.5    64.2     -8.0    30.6       no
 
-beats with >=1 disagreement: 1987074  -> consensus_disagreements.csv
+beats with >=1 disagreement (coarse screening tolerance, for the review set only): 1987074  -> consensus_disagreements.csv

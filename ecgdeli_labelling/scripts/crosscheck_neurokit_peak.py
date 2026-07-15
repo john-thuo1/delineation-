@@ -143,18 +143,26 @@ for rid, (path, cls) in sample.items():
         print(f"  {done}/{len(ids)} records  ({el:.0f}s, ~{el/done*len(ids)/60:.0f} min total)")
 
 # --- 5. write outputs (distinct peak-tagged names) ---
+# CSE Working Party two-standard-deviation acceptance limits (Eur. Heart J. 1985;6:815-825, Table 2).
+# For the peak method only the two boundaries P-onset and T-offset have a CSE limit; the peaks do not.
+CSE_2SD = {"p_onset": 10.2, "t_offset": 30.6}
 with open(os.path.join(XSUM, "consensus_peak_agreement_summary.txt"), "w") as f:
     def line(s=""): print(s); f.write(s+"\n")
     scope = f"{len(leads_run)} lead(s), {done} records"
-    line(f"NeuroKit2 (peak / NON-wavelet) vs ECGdeli  -  {scope}\n")
-    line("peak method returns peaks + P-onset + T-offset only (no QRS on/off, no T-onset)\n")
-    line(f"{'fiducial':11s} {'agree%':>7s} {'n':>8s} {'medianD':>8s} {'meanD':>7s}  (ms)")
+    line(f"NeuroKit2 (peak / NON-wavelet) vs ECGdeli  -  {scope}")
+    line("peak method returns peaks + P-onset + T-offset only (no QRS on/off, no T-onset).")
+    line("per-fiducial difference (NeuroKit2 minus ECGdeli). 2s_CSE = CSE Working Party 1985 limit (boundaries only).\n")
+    line(f"{'fiducial':11s} {'n':>8s} {'meanD':>7s} {'SD':>7s} {'medianD':>8s} {'2s_CSE':>7s} {'SD<=CSE':>8s}  (ms)")
     for k in FIDS:
         w, n = agree[k]
-        if n == 0: line(f"{k:11s} {'--':>7s} {0:>8d}"); continue
+        if n == 0: line(f"{k:11s} {0:>8d}"); continue
         d = np.array(deltas[k]) * (1000/FS)
-        line(f"{k:11s} {100*w/n:6.1f}% {n:>8d} {np.median(d):7.1f} {d.mean():6.1f}")
-    line(f"\nbeats with >=1 disagreement: {len(disagreements)}  -> consensus_peak_disagreements.csv")
+        cse = CSE_2SD.get(k)
+        cstr = f"{cse:7.1f}" if cse else f"{'--':>7s}"
+        wstr = ("yes" if (cse and d.std() <= cse) else "no") if cse else "--"
+        line(f"{k:11s} {n:>8d} {d.mean():7.1f} {d.std():7.1f} {np.median(d):8.1f} {cstr} {wstr:>8s}")
+    line(f"\nbeats with >=1 disagreement (coarse screening tolerance, for the review set only): "
+         f"{len(disagreements)}  -> consensus_peak_disagreements.csv")
 
 if disagreements:
     keys = sorted({k for d in disagreements for k in d})

@@ -20,7 +20,9 @@ ecgdeli_labelling/    STEP 1 - delineate with ECGdeli + QC + NeuroKit cross-chec
 dataset_curation/     STEP 2 - assemble the training set + QC columns + review worklist
   scripts/            build_master, add_qc_status, add_crosscheck_qc, build_manual_worklist, build_reconciled_global, extract_signal
   data/assembled|global|review|audit_samples/
-  tools/              medalcare_fiducial_corrector.html
+
+manual_labelling/     refinement of STEP 2 - manually correct the tier-1 critical pseudo-labels
+  MANUAL_LABELLING_PROTOCOL.md · tool/ (browser corrector) · scripts/ (worklist + merge-back) · data/ (plan, batches, corrections)
 
 statistics/           STEP 3 - population validation vs Table 6 and the preprint
   scripts/ data/ figures/

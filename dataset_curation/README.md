@@ -15,8 +15,11 @@ data/
   global/      reconciled_global_fiducials.csv         (one delineation per signal, leads reconciled)
   review/      signals_index.csv, require_manual_label.csv, require_manual_label_priority.csv
   audit_samples/  one extracted example record (signal + labels + lead-II plot)
-tools/       medalcare_fiducial_corrector.html         (browser tool to correct fiducials by hand)
 ```
+
+The manual correction of the flagged units (worklists, protocol, browser tool, merge-back) lives in its
+own module, **`../manual_labelling/`**, which reads `require_manual_label_priority.csv` + `master_labels.csv`
+from here and writes the corrected fiducials back into `master_labels.csv`.
 
 ## Files
 
