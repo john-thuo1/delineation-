@@ -74,14 +74,16 @@ def panel(a, v, t6, pp, title, unit, our_sd_for_pp=None):
     if pp is not None:
         sd_pp = pp[1] if pp[1] is not None else (our_sd_for_pp or v.std())
         a.plot(xs, gauss(xs, pp[0], sd_pp), color="#2CA02C", lw=2.0, label="Preprint Fig 5")
-    a.set_title(title, fontsize=10); a.set_xlabel(unit); a.set_yticks([]); a.legend(fontsize=7)
+    a.set_title(title, fontsize=10); a.set_xlabel(unit); a.tick_params(axis='y', labelsize=7); a.legend(fontsize=7)
 
 # ================= TIMING (from per_signal_median.csv) =========================================
 psm = pd.read_csv(os.path.join(DATA, "per_signal_median.csv"))
 s = psm[(psm.disease_class == "sinus") & (psm.lead == "II")]
 fig, ax = plt.subplots(2, 3, figsize=(14, 7))
-for a, f, ti in zip(ax.ravel(), TIMING, TTITLE):
+for i, (a, f, ti) in enumerate(zip(ax.ravel(), TIMING, TTITLE)):
     panel(a, s[f].values, T6[f], PP[f], ti, "ms", our_sd_for_pp=s[f].std())
+    if i % 3 == 0:
+        a.set_ylabel("Probability density")
 fig.suptitle("Healthy sinus, lead II (one median per record): our density vs published Table 6 (dashed) "
              "and preprint Figure 5 (solid).\nOf the directly comparable features only QT separates the two "
              "references — our density sits on the preprint (~385 ms), not Table 6 (~317 ms). The AV panel "
@@ -132,10 +134,12 @@ for rid in want:
 print("amplitude records used:", len(amp_rec["Ramp"]))
 
 fig, ax = plt.subplots(2, 3, figsize=(14, 7))
-for a, f, ti in zip(ax.ravel(), AMP, ATITLE):
+for i, (a, f, ti) in enumerate(zip(ax.ravel(), AMP, ATITLE)):
     v = np.asarray(amp_rec[f], float); v = v[np.isfinite(v)]
     sd_proxy = max(v.std(), 0.02)
     panel(a, v, (T6A[f], sd_proxy), (PPA[f], sd_proxy), ti, "mV")
+    if i % 3 == 0:
+        a.set_ylabel("Probability density")
 ax.ravel()[5].axis("off")
 fig.suptitle("Healthy sinus, lead II amplitudes (one median per record): our density vs published Table 6 "
              "(dashed) and preprint Figure 5 (solid).\nThe two references agree on amplitudes and both overlap "
