@@ -1,12 +1,12 @@
 # ml_modelling
 
-The ECG-delineation model. Global design: 12 leads in → one delineation per beat (sequence
+The ECG-delineation model. Global design 12 leads in → one delineation per beat (sequence
 labelling / 1-D semantic segmentation), trained on the curated pseudo-labels.
 
 ## Inputs
-- Labels: `../dataset_curation/data/assembled/master_labels.csv` (per record×lead×beat fiducials +
+- Labels `../dataset_curation/data/assembled/master_labels.csv` (per record×lead×beat fiducials +
   `split` ∈ {train, val} + QC columns `qc_status`, `xmethod_flag`, `needs_review`).
-- Waveforms: `../dataset_curation/data/review/signals_index.csv` maps each `record_id` to its
+- Waveforms `../dataset_curation/data/review/signals_index.csv` maps each `record_id` to its
   raw 12×5000 signal under `../WP2_largeDataset_Noise/`.
 - Testing is on the separate internal (MonoAlg3D) dataset, so MedalCare-XL is all training/val.
 

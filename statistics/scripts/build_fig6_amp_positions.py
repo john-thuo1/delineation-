@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Step 1/2: extract peak positions for the classes/leads needed by the Figure 6 amplitude
+"""Step 1/2 extract peak positions for the classes/leads needed by the Figure 6 amplitude
 panels (MI, LAE, FAM vs sinus) -> fig6_amp_positions.csv (small)."""
 import pandas as pd, os
 HERE = os.path.dirname(os.path.abspath(__file__))

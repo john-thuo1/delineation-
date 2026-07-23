@@ -8,7 +8,7 @@ Table 6 'sim' column, and prints a single distance-to-paper score. Run it on the
 output of each ECGdeli preprocessing config (see ecgdeli_config_sweep.m) and keep
 the config with the smallest score.
 
-Usage:
+Usage
     python3 score_vs_table6.py FIDUCIALS.csv [--class sinus] [--signals /path/to/MedalCareXL Data]
 """
 import csv, sys, argparse, os

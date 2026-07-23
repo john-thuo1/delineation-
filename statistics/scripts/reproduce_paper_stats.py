@@ -3,19 +3,19 @@
 reproduce_paper_stats.py  -  Reproduce the MedalCare-XL paper's population statistics
 (Table 6, Figures 5-6) from our ECGdeli labels, as a consistency / reproducibility check.
 
-This is the Python counterpart of reproduce_paper_stats.m. It:
+This is the Python counterpart of reproduce_paper_stats.m. It
   * aggregates each feature to ONE value per record (median across the record's repeated
-    beats) to match the paper's per-ECG extraction;
+    beats) to match the paper's per-ECG extraction
   * compares the healthy timing means and standard deviations, and the amplitude features,
-    with the Table 6 "sim" column;
-  * checks the per-class shifts against Figure 6;
-  * draws the Figure-5-style density overlays used in the report:
+    with the Table 6 "sim" column
+  * checks the per-class shifts against Figure 6
+  * draws the Figure-5-style density overlays used in the report
         fig_repro_timing_leadII.png / fig_repro_amp_leadII.png  (per record, vs paper)
         fig_perbeat_timing_leadII.png / fig_perbeat_amp_leadII.png (all beats, no overlay)
 
-NOTE: consistency check, not accuracy -- the paper's features were also ECGdeli-derived.
+NOTE consistency check, not accuracy -- the paper's features were also ECGdeli-derived.
 
-Run:  pip install pandas numpy matplotlib ; python3 reproduce_paper_stats.py
+Run pip install pandas numpy matplotlib, python3 reproduce_paper_stats.py
 """
 import pandas as pd, numpy as np, os, csv
 import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
@@ -32,7 +32,7 @@ MS   = 2.0                                    # 500 Hz -> 2 ms/sample
 LEADS = ["I","II","III","aVR","aVL","aVF","V1","V2","V3","V4","V5","V6"]; LROW={l:i for i,l in enumerate(LEADS)}
 N_AMP = 200                                   # records sampled for amplitude stats
 
-# Table 6 "sim" per lead: (mu,sd) for [Pdur,QRSdur,Tdur,PQint,QTint,RRint] then amplitudes
+# Table 6 "sim" per lead (mu,sd) for [Pdur,QRSdur,Tdur,PQint,QTint,RRint] then amplitudes
 T6T = {"I":[(124.06,18.37),(131.31,17.56),(178.12,31.08),(128.07,28.06),(310.54,33.23),(758.15,54.97)],
  "II":[(128.09,14.00),(126.10,13.73),(182.33,25.94),(127.18,22.97),(317.08,23.61),(758.02,54.41)],
  "III":[(164.52,24.12),(126.80,14.32),(183.16,28.07),(171.88,30.36),(306.94,26.02),(757.99,54.41)],
@@ -74,7 +74,7 @@ for k in TIMING: df.loc[df[k] <= 0, k] = np.nan
 # per-record aggregation (one median value per record-lead)
 rec = df.groupby(["disease_class","record_id","lead"])[TIMING].median().reset_index()
 
-# ---- timing: healthy sinus vs Table 6 ----
+# ---- timing healthy sinus vs Table 6 ----
 print("=== TIMING (sinus, per record) vs Table 6 (sim), averaged over 12 leads ===")
 sin = rec[rec.disease_class=="sinus"]
 for i,f in enumerate(TIMING):

@@ -1,6 +1,6 @@
 # Per-beat QC classifier (critical/minor/clean) — reproduces qc_review_list.py rules.
-# Hardcoded column indices for the 64-col master schema: fs_hz=6, fiducials p_onset..t_offset
-# = cols 13..23 (in order), qrs_present=42. Reads DATA rows only; appends ",qc_status,qc_flags".
+# Hardcoded column indices for the 64-col master schema fs_hz=6, fiducials p_onset..t_offset
+# = cols 13..23 (in order), qrs_present=42. Reads DATA rows only, appends ",qc_status,qc_flags".
 {
  fs=$6+0; if(fs<=0)fs=500; msf=1000.0/fs;
  struct=0;gross=0;mild=0;prevv="";prevp=0;

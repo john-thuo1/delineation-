@@ -6,12 +6,12 @@ Given a record_id, it (1) finds the waveform via signals_index.csv, (2) copies t
 signal out, (3) extracts that record's rows from master_labels.csv (all leads/beats, with the
 fiducial positions), and (4) optionally plots lead II with the fiducials overlaid.
 
-Usage:
+Usage
     python3 extract_signal.py                       # first record in the index
     python3 extract_signal.py <record_id>           # a specific signal
     python3 extract_signal.py <record_id> --plot    # also draw lead II with fiducials
 
-Outputs (in ./extracted/):
+Outputs (in ./extracted/)
     <record_id>_signal.csv   the 12 x N raw waveform (mV)
     <record_id>_labels.csv   per-lead, per-beat fiducial labels for that signal
     <record_id>_leadII.png   (with --plot)

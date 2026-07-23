@@ -4,15 +4,15 @@ build_fig6_timing.py  -  Per-class (healthy vs disease) comparison for the TIMIN
 the preprint Figure 6 highlights, in the disease-relevant leads. Uses the Level-1
 per-signal medians (no signal reads needed).
 
-Fig 6 timing panels reproduced:
+Fig 6 timing panels reproduced
   RBBB / LBBB  -> QRS duration (lead II)
   AV block     -> PR interval  (lead II)
   IAB / LAE    -> P duration   (lead II)
   FAM          -> P duration   (lead V6)
   MI           -> QT interval  (lead V4)
 
-Reads:  per_signal_median.csv
-Writes: fig6_timing_by_class.csv
+Reads per_signal_median.csv
+Writes fig6_timing_by_class.csv
 """
 import pandas as pd, numpy as np, os
 HERE = os.path.dirname(os.path.abspath(__file__))

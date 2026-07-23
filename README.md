@@ -39,12 +39,12 @@ Dissertation/         the thesis
    (one row per record×lead×beat). `qc_review_list.py` tiers each beat critical/minor/clean.
    `crosscheck_neurokit(_peak).py` compare against an independent delineator.
    *This step is NOT rerun routinely — the master fiducials CSV is the fixed source for everything below.*
-2. **dataset_curation** — `build_master.py` → `master_labels.csv`; `add_qc_status.py` + `add_crosscheck_qc.py`
-   add the QC columns; `build_manual_worklist.py` → the review lists; `build_reconciled_global.py` → the global table.
+2. **dataset_curation** — `build_master.py` → `master_labels.csv`, `add_qc_status.py` + `add_crosscheck_qc.py`
+   add the QC columns, `build_manual_worklist.py` → the review lists, `build_reconciled_global.py` → the global table.
 3. **statistics** — `build_per_signal_stats.py` etc. reproduce the population statistics and compare to Table 6 / the preprint.
 4. **ml_modelling** — trains the delineation model on `dataset_curation/data/assembled/master_labels.csv`.
 
-All input/output locations are declared in `config/paths.yaml`; pipeline parameters (QC thresholds,
+All input/output locations are declared in `config/paths.yaml`, pipeline parameters (QC thresholds,
 aggregation, split, reconciliation) in `config/pipeline_settings.yaml`.
 
 ## Note

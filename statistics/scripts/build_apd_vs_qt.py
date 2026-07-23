@@ -5,10 +5,10 @@ build_apd_vs_qt.py  -  Cross-check our ECGdeli QT against the TRUE repolarisatio
 the physiology, longer APD should give longer QT. APD is the closest thing to timing ground
 truth in the parameter files (which are simulation INPUTS, not output fiducials).
 
-Reads:  /tmp/apd_raw.txt  (APD.min/max grepped per ventricular file)
+Reads /tmp/apd_raw.txt  (APD.min/max grepped per ventricular file)
         ../ecgdeli_labelling/medalcare_manifest.csv  (path_param_ventricular -> record_id)
         per_signal_median.csv                        (our per-record QT)
-Writes: apd_by_run.csv, apd_vs_qt.csv, apd_vs_qt.png
+Writes apd_by_run.csv, apd_vs_qt.csv, apd_vs_qt.png
 """
 import pandas as pd, numpy as np, os, csv
 import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
@@ -19,7 +19,7 @@ while ROOT != os.path.dirname(ROOT) and not os.path.isfile(os.path.join(ROOT,"co
 DATA = os.path.join(HERE, "..", "data")
 FIG  = os.path.join(HERE, "..", "figures")
 
-# 1) APD per parameter-file path  (each line is "path:APD.min,val")
+# 1) APD per parameter-file path  (each line is "pathAPD.min,val")
 rows={}
 for line in open("/tmp/apd_raw.txt"):
     left,val = line.strip().rsplit(",",1)

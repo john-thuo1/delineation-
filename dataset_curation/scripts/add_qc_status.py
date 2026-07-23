@@ -2,18 +2,18 @@
 """
 add_qc_status.py  -  Append per-beat QC status to master_labels.csv.
 
-Reproduces the exact rules of qc_review_list.py and adds two columns:
+Reproduces the exact rules of qc_review_list.py and adds two columns
   qc_status  in {critical, minor, clean}
-  qc_flags   ';'-joined reasons for critical beats ("" otherwise)
+  qc_flags   ','-joined reasons for critical beats ("" otherwise)
 
-Rules (per beat):
-  CRITICAL  - any of: QRS-internal order violated (>TOL), a boundary inversion > GROSS samples,
+Rules (per beat)
+  CRITICAL  - any of QRS-internal order violated (>TOL), a boundary inversion > GROSS samples,
               QRSdur outside 40-200 ms, QT outside 250-700 ms, PR outside 80-400 ms, or R missing.
   MINOR     - a moderate boundary inversion (TOL..GROSS samples), no critical reason.
   CLEAN     - nothing beyond a trivial (<= TOL) wobble.
 
-Run:  python3 add_qc_status.py     (rewrites master_labels.csv in place via a temp file)
-Note: the awk version (qc_classify.awk) is the fast path used to build the shipped file; this
+Run python3 add_qc_status.py     (rewrites master_labels.csv in place via a temp file)
+Note the awk version (qc_classify.awk) is the fast path used to build the shipped file, this
       Python script is the readable, canonical equivalent and produces identical results
       (critical = 104,171, minor = 477,300, clean = 2,064,733).
 """

@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 """
 build_gaussian_overlays.py  -  Healthy-sinus lead-II density overlays (preprint Figure 5 style),
-showing BOTH references on every panel: the published Table 6 Gaussian (dashed red) and the
+showing BOTH references on every panel the published Table 6 Gaussian (dashed red) and the
 preprint Figure 5 reference (solid green).
 
 The preprint publishes only probability-density plots (no numeric mean/SD table), so the preprint
-CENTRES are read from Figure 5 and its WIDTHS reuse the Table 6 SD (the closest available spread);
+CENTRES are read from Figure 5 and its WIDTHS reuse the Table 6 SD (the closest available spread)
 for the PR panel, which Table 6 does not report, the width uses our own observed SD. Only QT differs
 materially between the two references, and our density sits on the preprint centre (~385), not Table 6 (~317).
 
-Timing densities come from per_signal_median.csv (one median value per record); amplitudes are
+Timing densities come from per_signal_median.csv (one median value per record), amplitudes are
 recomputed from the raw signals for a sample of sinus records.
 
-Writes: fig_repro_timing_leadII.png, fig_repro_amp_leadII.png  (statistics/figures + reports/figures)
+Writes fig_repro_timing_leadII.png, fig_repro_amp_leadII.png  (statistics/figures + reports/figures)
 """
 import os, csv
 import numpy as np, pandas as pd
@@ -30,20 +30,20 @@ SIGIDX = os.path.join(ROOT, "dataset_curation", "data", "review", "signals_index
 N_AMP = 200                       # sinus records sampled for amplitude densities
 
 # ---- lead-II references (mean, sd) ------------------------------------------------------------
-# NOTE on the AV interval: the preprint's Figure 5 plots PRint (P onset -> R peak, ~190 ms) while
+# NOTE on the AV interval the preprint's Figure 5 plots PRint (P onset -> R peak, ~190 ms) while
 # the published Table 6 reports PQint (P onset -> QRS onset, ~127 ms) — different measurements. This
-# panel matches the PREPRINT convention, so it shows our PRint vs the preprint only; the Table 6 PQ
+# panel matches the PREPRINT convention, so it shows our PRint vs the preprint only, the Table 6 PQ
 # comparison (our PQint 124 vs Table 6 127) is in the Section 4.4 table. Table 6 has no PRint entry.
 T6 = {"Pdur": (128.09, 14.00), "QRSdur": (126.10, 13.73), "Tdur": (182.33, 25.94),
       "PRint": None,           "QTint": (317.08, 23.61), "RRint": (758.02, 54.41)}
-# Preprint Figure 5 (simulated/red curve): centres read from the figure; widths reuse Table 6 SD
+# Preprint Figure 5 (simulated/red curve) centres read from the figure, widths reuse Table 6 SD
 # (our observed SD for PRint, which Table 6 lacks). Of the directly comparable features only QT departs.
 PP = {"Pdur": (128, 14.00), "QRSdur": (125, 13.73), "Tdur": (185, 25.94),
       "PRint": (190, 24.6),  "QTint": (385, 23.61), "RRint": (760, 54.41)}
 TIMING = ["Pdur", "QRSdur", "Tdur", "PRint", "QTint", "RRint"]
 TTITLE = ["P wave duration", "QRS duration", "T wave duration", "PR interval (P–R peak)", "QT interval", "RR interval"]
 
-# amplitudes (mean); widths use a nominal SD proxy since neither reference publishes lead-II amp SD
+# amplitudes (mean), widths use a nominal SD proxy since neither reference publishes lead-II amp SD
 T6A = {"Pamp": 0.09, "Qamp": 0.06, "Ramp": 0.59, "Samp": -0.20, "Tamp": 0.49}
 PPA = {"Pamp": 0.10, "Qamp": 0.05, "Ramp": 0.70, "Samp": -0.20, "Tamp": 0.45}
 AMP = ["Pamp", "Qamp", "Ramp", "Samp", "Tamp"]

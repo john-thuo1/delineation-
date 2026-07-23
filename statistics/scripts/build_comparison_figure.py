@@ -4,8 +4,8 @@ build_comparison_figure.py  -  Lead-II timing densities (our per-signal medians)
 markers for our mean, published Table 6, and the preprint Figure 5 estimate. Shows that
 QT matches the preprint (~385) and not Table 6 (317), while everything else agrees with both.
 
-Reads:  per_signal_median.csv
-Writes: leadII_vs_paper_preprint.png
+Reads per_signal_median.csv
+Writes leadII_vs_paper_preprint.png
 """
 import pandas as pd, numpy as np, os
 import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
@@ -15,7 +15,7 @@ DATA = os.path.join(HERE, "..", "data"); FIG = os.path.join(HERE, "..", "figures
 df = pd.read_csv(os.path.join(DATA,"per_signal_median.csv"))
 s = df[(df.disease_class=="sinus") & (df.lead=="II")]
 
-# feature: (our col, Table6 II value, preprint Fig5 II estimate, title, unit)
+# feature (our col, Table6 II value, preprint Fig5 II estimate, title, unit)
 PANELS = [("Pdur",128.09,128,"P duration"),("QRSdur",126.10,125,"QRS duration"),
           ("Tdur",182.33,185,"T duration"),("PRint",None,190,"PR interval (P–R peak)"),
           ("QTint",317.08,385,"QT interval"),("RRint",758.02,760,"RR interval")]

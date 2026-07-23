@@ -4,8 +4,8 @@ build_amplitudes_fig5.py  -  Sinus lead-II amplitude features (P/Q/R/S/T) for th
 Figure 5 amplitude panels. Amplitude = signal at the fiducial peak minus the pre-QRS baseline.
 Per-signal median over beats, then cohort mean, on a sample of recordings.
 
-Reads:  ../ecgdeli_labelling/medalcare_fiducials_ecgdeli.csv , ../ecgdeli_labelling/medalcare_manifest.csv
-Writes: amplitudes_sinus_leadII.csv
+Reads ../ecgdeli_labelling/medalcare_fiducials_ecgdeli.csv , ../ecgdeli_labelling/medalcare_manifest.csv
+Writes amplitudes_sinus_leadII.csv
 """
 import pandas as pd, numpy as np, os, csv
 HERE = os.path.dirname(os.path.abspath(__file__))

@@ -2,7 +2,7 @@
 % Find the ECGdeli preprocessing config that best reproduces the paper's Table 6.
 %
 % Runs a small HEALTHY (sinus) sample under four preprocessing configs and writes
-% one minimal fiducials CSV per config. Then score each in Python:
+% one minimal fiducials CSV per config. Then score each in Python
 %     python3 score_vs_table6.py sweep_raw_iso.csv
 %     python3 score_vs_table6.py sweep_filtered_iso.csv   ... etc.
 % Keep the config with the smallest QT / total distance-to-paper, then set that

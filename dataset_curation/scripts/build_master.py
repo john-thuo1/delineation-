@@ -3,19 +3,19 @@
 build_master.py  -  Assemble the two training-ready files for the delineation model.
 
 Since testing is done on the separate internal (MonoAlg3D) dataset, ALL MedalCare-XL data is
-used for training: the original test/examples splits are folded into 'train', and 'validation'
+used for training the original test/examples splits are folded into 'train', and 'validation'
 is kept as 'val' (a by-record hold-out for model selection). Beats are kept per-beat at their
 real sample positions (NOT median-collapsed) — a segmentation model needs fiducial positions
 aligned to the actual waveform.
 
-Outputs (written next to this script):
+Outputs (written next to this script)
   master_labels.csv   - the full per-(record, lead, beat) fiducial labels, split -> {train, val}
-  signals_index.csv   - one row per signal: record_id -> raw/filtered/noise waveform paths + shape
+  signals_index.csv   - one row per signal record_id -> raw/filtered/noise waveform paths + shape
 
-The two files pair on record_id: for a labels row, load the waveform from signals_index
+The two files pair on record_id for a labels row, load the waveform from signals_index
 (path_raw), window it with beat_start_sample/beat_end_sample, and read the fiducial columns.
 
-Run:  python3 build_master.py
+Run python3 build_master.py
 """
 import csv, os
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -25,10 +25,10 @@ while ROOT != os.path.dirname(ROOT) and not os.path.isfile(os.path.join(ROOT,"co
 SRC  = os.path.join(ROOT, "ecgdeli_labelling","data","primary","medalcare_fiducials_ecgdeli.csv")
 MAN  = os.path.join(ROOT, "ecgdeli_labelling","data","input","medalcare_manifest.csv")
 
-def remap(split):                       # test/examples/train -> train ; validation -> val
+def remap(split):                       # test/examples/train -> train, validation -> val
     return "val" if split == "validation" else "train"
 
-def mi_group(s):                        # LCX_1.0_ant -> LCX_1.0 ; six normalised MI groups
+def mi_group(s):                        # LCX_1.0_ant -> LCX_1.0, six normalised MI groups
     if not s: return ""
     return s[:-4] if s.endswith("_ant") else s[:-5] if s.endswith("_post") else s
 
@@ -59,5 +59,5 @@ with open(os.path.join(ROOT, "dataset_curation","data","review","signals_index.c
     for rr in man:
         rr["split"] = remap(rr["split"]); rr["mi_group"] = mi_group(rr.get("mi_subclass","") or "")
         w.writerow({k: rr.get(k, "") for k in cols})
-tr = sum(1 for rr in man if remap(rr["split"]) == "train")  # note: rr['split'] already remapped above
+tr = sum(1 for rr in man if remap(rr["split"]) == "train")  # note rr['split'] already remapped above
 print(f"signals_index.csv  -> {len(man):,} signals")

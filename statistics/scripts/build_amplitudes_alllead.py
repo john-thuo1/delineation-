@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
 build_amplitudes_alllead.py  -  All-lead healthy-sinus amplitude comparison vs the published
-Table 6 'sim' means (the source of the report's Table 8: per-feature mean absolute difference and
+Table 6 'sim' means (the source of the report's Table 8 per-feature mean absolute difference and
 lead-sign agreement). Amplitude = signal at the fiducial peak minus the pre-QRS isoelectric baseline
-(median of the 12 samples ending at QRS onset); per-signal median over beats, then per-lead cohort
+(median of the 12 samples ending at QRS onset), per-signal median over beats, then per-lead cohort
 mean, then mean absolute difference across the 12 leads vs Table 6.
 
-Sampling: a REPRODUCIBLE RANDOM sample of N_AMP sinus recordings, drawn without replacement from the
+Sampling a REPRODUCIBLE RANDOM sample of N_AMP sinus recordings, drawn without replacement from the
 sorted list of eligible records with a fixed seed, so the result is deterministic and unbiased.
 
-Reads:  dataset_curation/data/assembled/master_labels.csv (peak positions), raw signals.
-Writes: statistics/data/amplitudes_alllead_sinus.csv , statistics/data/amplitude_sample_sinus.csv
+Reads dataset_curation/data/assembled/master_labels.csv (peak positions), raw signals.
+Writes statistics/data/amplitudes_alllead_sinus.csv , statistics/data/amplitude_sample_sinus.csv
 """
 import os, csv
 import numpy as np, pandas as pd
@@ -52,7 +52,7 @@ for ch in pd.read_csv(MASTER, usecols=cols, dtype=str, na_filter=False, chunksiz
     for (rid, ld), g in ch.groupby(["record_id", "lead"]):
         beats.setdefault((rid, ld), []).extend(g.to_dict("records"))
 
-# --- amplitude per (lead, feature): per-record median, then per-lead cohort mean ---
+# --- amplitude per (lead, feature) per-record median, then per-lead cohort mean ---
 our = {ld: {f: [] for f in AMP} for ld in LEADS}
 for rid in want:
     try:

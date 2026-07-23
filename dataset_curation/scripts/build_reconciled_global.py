@@ -7,30 +7,30 @@ need manual fixing are easy to track.
 WHY GLOBAL
     We train a 12-lead-in / one-delineation-out model (see the methodology). ECGdeli
     labels each lead separately, so this script reconciles the 12 leads of each beat
-    into one global fiducial set using the standard clinical convention:
+    into one global fiducial set using the standard clinical convention
         R-peak = MASTER, from a single reference channel (lead II) [definitive beat anchor]
         onset  = earliest across leads (min)     [wave begins when it first appears]
         offset = latest across leads   (max)     [wave ends when it last disappears]
         P/Q/S/T peak = median across leads       [robust central estimate]
     Beat counts are identical across all 12 leads for every record (verified 16,848/16,848),
-    so beat_id already aligns the same cardiac cycle; the R-peak fiducial itself legitimately
+    so beat_id already aligns the same cardiac cycle, the R-peak fiducial itself legitimately
     lands at slightly different samples per lead (median ~32 ms spread) because the QRS
     projects with a different shape onto each lead, so we anchor the beat to the master
     reference-channel R-peak rather than to twelve independent detections.
 
-    Because each MedalCare-XL record is one simulated beat repeated ~13x, we output
-    ONE ROW PER SIGNAL using a representative (median) beat; beat_start/end give its
+    Since each MedalCare-XL record is one simulated beat repeated ~13x, we output
+    ONE ROW PER SIGNAL using a representative (median) beat, beat_start/end give its
     window, and path_raw points at the 12x5000 waveform.
 
 QC STATUS  (carried in the file so signals with issues are trackable)
-    critical -> GENUINE problem: at least one lead has >=50% of its beats flagged
+    critical -> GENUINE problem at least one lead has >=50% of its beats flagged
                 critical. These are the units to correct manually (~4,251 units).
     minor    -> has some critical beats but no genuine lead (transient glitches on
-                otherwise-clean repeated beats; a per-record consensus absorbs them).
+                otherwise-clean repeated beats, a per-record consensus absorbs them).
     clean    -> no critical beats.
 
-Run:   python3 build_reconciled_global.py
-Out:   reconciled_global_fiducials.csv   (one row per signal; global fiducials + QC)
+Run python3 build_reconciled_global.py
+Out reconciled_global_fiducials.csv   (one row per signal, global fiducials + QC)
 """
 import pandas as pd, numpy as np, csv, os
 
@@ -58,7 +58,7 @@ qc = pd.read_csv(QC, usecols=["record_id","lead","beat_id"]); qc["is_crit"] = 1
 f = f.merge(qc, on=["record_id","lead","beat_id"], how="left")
 f["is_crit"] = f["is_crit"].fillna(0).astype(int)
 
-# ---- 2. genuine-problem units: (record,lead) with >=50% of beats critical ----
+# ---- 2. genuine-problem units (record,lead) with >=50% of beats critical ----
 u = f.groupby(["record_id","lead"]).agg(nb=("beat_id","size"), nc=("is_crit","sum")).reset_index()
 u["genuine"] = u["nc"]/u["nb"] >= 0.5
 gen = u[u["genuine"]]
@@ -69,16 +69,16 @@ rec_anycrit  = set(f.loc[f["is_crit"] > 0, "record_id"])
 # ---- 3. reconcile every beat across the 12 leads -> global fiducials ----
 # Beat identity is anchored to a MASTER R-peak taken from a single reference channel
 # (lead II, the rhythm lead), rather than reconciling twelve independently-detected
-# R-peaks. Beat counts are identical across all 12 leads for every record (verified:
-# 16,848/16,848), so beat_id already aligns the same cardiac cycle; taking the R-peak
+# R-peaks. Beat counts are identical across all 12 leads for every record (verified
+# 16,848/16,848), so beat_id already aligns the same cardiac cycle, taking the R-peak
 # from the master channel makes the anchor definitive and independent of per-lead
 # detection. Onsets are the earliest across leads, offsets the latest (the global
 # convention that recovers a wave from whichever lead shows it above the isoelectric
-# line); the secondary P/Q/S/T peaks are the robust median across leads.
+# line), the secondary P/Q/S/T peaks are the robust median across leads.
 REF_LEAD = "II"
 agg = {c:"min" for c in ONS}
 agg.update({c:"max" for c in OFFS})
-agg.update({c:"median" for c in PKS})          # p/q/(r)/s/t peaks; r_peak overridden below
+agg.update({c:"median" for c in PKS})          # p/q/(r)/s/t peaks, r_peak overridden below
 agg.update({c:"max" for c in PRES})
 agg["beat_start_sample"] = "min"; agg["beat_end_sample"] = "max"
 recon = f.groupby(["record_id","beat_id"]).agg(agg).reset_index()
@@ -91,7 +91,7 @@ recon = recon.drop(columns=["r_master"])
 for c in GLOBAL_FIDS+["beat_start_sample","beat_end_sample"]:
     recon[c] = recon[c].round()
 
-# ---- 4. one row per signal: the representative (median beat_id) beat ----
+# ---- 4. one row per signal the representative (median beat_id) beat ----
 med = f.groupby("record_id")["beat_id"].median().rename("medb").reset_index()
 recon = recon.merge(med, on="record_id")
 recon["d"] = (recon["beat_id"] - recon["medb"]).abs()

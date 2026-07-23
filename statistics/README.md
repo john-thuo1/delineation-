@@ -1,9 +1,9 @@
-# statistics — STEP 3: population validation vs the preprint & Table 6
+# statistics — STEP 3 population validation vs the preprint & Table 6
 
 Two-level population statistics for the MedalCare-XL ECGdeli labels, compared against the
 **preprint** (arXiv:2211.15997) Figure 5 and the **published** Table 6.
 
-Layout: `scripts/` (builders), `data/` (the CSVs below), `figures/` (the PNGs below). Scripts read
+Layout `scripts/` (builders), `data/` (the CSVs below), `figures/` (the PNGs below). Scripts read
 the fixed fiducials from `../ecgdeli_labelling/data/primary/` and resolve paths via the repo root.
 
 ## Method (two levels)
@@ -17,12 +17,12 @@ and resists the occasional mis-detected beat.
 
 **Level 2 — per lead, per class (`per_lead_class_summary.csv`).** The Level-1 medians are then
 aggregated across recordings into mean, SD and n, for each lead and each disease class. This is
-the unit that lines up with the paper: Figure 5 (lead II density over all ECGs), Table 6
+the unit that lines up with the paper Figure 5 (lead II density over all ECGs), Table 6
 (per-lead mean ± SD, all 12 leads), and Figure 6 (per class, per relevant lead).
 
 ## Result (healthy sinus)
 
-Every timing biomarker reproduces the paper **except QT**, and QT matches the **preprint**:
+Every timing biomarker reproduces the paper **except QT**, and QT matches the **preprint**
 
 | Feature (lead II) | Ours | Preprint Fig 5 (est.) | Table 6 |
 |---|---|---|---|
@@ -33,20 +33,20 @@ Every timing biomarker reproduces the paper **except QT**, and QT matches the **
 | **QT interval** | **386** | **~385** | **317** |
 | RR interval | 759 | ~760 | 758 |
 
-Across all 12 leads (`comparison_sinus_vs_table6.csv`): QRS duration, T duration and RR match
-Table 6 to within a few ms; P duration and PQ run slightly short (the simulated beats carry only
-a residual P wave); and **QT is +66 to +74 ms vs Table 6 in every lead** — the known T-offset
+Across all 12 leads (`comparison_sinus_vs_table6.csv`) QRS duration, T duration and RR match
+Table 6 to within a few ms, P duration and PQ run slightly short (the simulated beats carry only
+a residual P wave), and **QT is +66 to +74 ms vs Table 6 in every lead** — the known T-offset
 localisation difference. The same QT sits right on the preprint Figure 5 peak (~385 ms).
 
-![Lead II: ours vs preprint vs Table 6](figures/leadII_vs_paper_preprint.png)
+![Lead II ours vs preprint vs Table 6](figures/leadII_vs_paper_preprint.png)
 
 In the QT panel the preprint line (green) lands on our distribution's peak while Table 6 (red)
-falls outside it; for every other feature the three overlap.
+falls outside it, for every other feature the three overlap.
 
 ## Amplitudes (sinus, lead II — Figure 5 amplitude panels)
 
 Amplitude = signal at the fiducial peak minus the pre-QRS baseline, per-signal median then cohort
-mean over a reproducible random sample of 200 recordings, seed 2026 (`amplitudes_sinus_leadII.csv`):
+mean over a reproducible random sample of 200 recordings, seed 2026 (`amplitudes_sinus_leadII.csv`)
 
 | Feature | Ours (mV) | Table 6 | Preprint Fig 5 (est.) |
 |---|---|---|---|
@@ -56,14 +56,14 @@ mean over a reproducible random sample of 200 recordings, seed 2026 (`amplitudes
 | S amplitude | −0.197 | −0.20 | ~−0.20 |
 | T amplitude | 0.468 | 0.49 | ~0.45 |
 
-S and T amplitudes match both references; R sits close to Table 6 (0.54 vs 0.59) and below the
-preprint's ~0.70; the P wave runs slightly low while Q now agrees closely with Table 6, consistent
+S and T amplitudes match both references, R sits close to Table 6 (0.54 vs 0.59) and below the
+preprint's ~0.70, the P wave runs slightly low while Q now agrees closely with Table 6, consistent
 with the residual P wave of the simulated beats.
 
 ## Per-class timing (Figure 6)
 
 For the timing features Figure 6 highlights per disease, our healthy-vs-disease shifts all go the
-expected direction (`fig6_timing_by_class.csv`):
+expected direction (`fig6_timing_by_class.csv`)
 
 | Class | Feature (lead) | Healthy | Disease | Shift | Fig 6 |
 |---|---|---|---|---|---|
@@ -78,7 +78,7 @@ expected direction (`fig6_timing_by_class.csv`):
 ### Figure 6 amplitude panels (healthy vs disease)
 
 The amplitude features Figure 6 highlights per disease (`fig6_amplitudes_by_class.csv`), computed
-as signal-at-peak minus pre-QRS baseline, per-signal median then cohort mean over a reproducible random sample of 100 recordings per class (seed 2026):
+as signal-at-peak minus pre-QRS baseline, per-signal median then cohort mean over a reproducible random sample of 100 recordings per class (seed 2026)
 
 | Feature (lead) | Class | Healthy (mV) | Disease (mV) | Shift |
 |---|---|---|---|---|

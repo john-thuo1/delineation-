@@ -1,24 +1,28 @@
+#!/usr/bin/env python3
+# NOTE: retained ONLY to regenerate the ECGdeli-vs-NeuroKit2 comparison table in the
+# dissertation Appendix. NeuroKit2 is not part of the QC pipeline; QC uses the rule-based
+# screen and the cross-lead consistency check (see build_crosslead_priority.py).
 """
 crosscheck_neurokit.py  -  Independent second-tool verification of the ECGdeli labels.
 
 Runs NeuroKit2 (an independent DWT delineator) and compares its P/QRS/T fiducials
 against the ECGdeli labels, beat by beat, matched on the R-peak. Agreement between the
 two tools provides convergent supporting evidence, while disagreement beyond tolerance
-identifies cases requiring further inspection; neither tool is treated as ground truth.
+identifies cases requiring further inspection, neither tool is treated as ground truth.
 Disagreeing beats are written to a disagreement list for manual review.
 
-FULL-RUN configuration:
+FULL-RUN configuration
     N_PER_CLASS = None   -> every record (all 16,848), not a sample
     ALL_LEADS   = True   -> all 12 leads (else lead II only)
 Expect a long run (all records x 12 leads is ~200k delineations). Progress prints
 every 200 records so you can see it is alive. It is safe to reduce ALL_LEADS to
 False (lead II only) for a much faster but still complete-record verification.
 
-Run:
+Run
     pip install neurokit2 numpy
     python3 crosscheck_neurokit.py
 
-Outputs (this folder):
+Outputs (this folder)
     consensus_agreement_summary.txt   per-fiducial agreement + median/mean offset
     consensus_disagreements.csv       every beat where the tools differ > tolerance (with lead)
 """
@@ -40,8 +44,8 @@ FIDUCIALS = os.path.join(ROOT,"ecgdeli_labelling","data","primary","medalcare_fi
 XSUM      = os.path.join(ROOT,"ecgdeli_labelling","data","neurokit_crosscheck","summaries")
 XINT      = os.path.join(ROOT,"ecgdeli_labelling","data","neurokit_crosscheck","intermediates")
 os.makedirs(XSUM, exist_ok=True); os.makedirs(XINT, exist_ok=True)   # never lose a long run at write time
-N_PER_CLASS = None            # None = ALL records; or an int for a sample per class
-ALL_LEADS   = True            # True = all 12 leads; False = lead II only
+N_PER_CLASS = None            # None = ALL records, or an int for a sample per class
+ALL_LEADS   = True            # True = all 12 leads, False = lead II only
 SIGNAL_VER  = "raw"
 METHOD      = "dwt"           # wavelet (DWT) delineator. The non-wavelet check lives in crosscheck_neurokit_peak.py
 FS          = 500
@@ -110,7 +114,7 @@ for rid, (path, cls) in sample.items():
                 v = arr[i] if i < len(arr) else np.nan
                 beat[k] = int(v) if (v == v and v is not None) else None
             nk_beats.append(beat)
-        used = set()                          # enforce one-to-one: each NeuroKit beat matches once
+        used = set()                          # enforce one-to-one each NeuroKit beat matches once
         for eb in edeli[(rid, ld)]:
             er = eb["r_peak"]
             if er is None or not nk_beats: continue
@@ -139,8 +143,8 @@ for rid, (path, cls) in sample.items():
         print(f"  {done}/{len(ids)} records  ({el:.0f}s, ~{el/done*len(ids)/60:.0f} min total)")
 
 # --- 5. write outputs ---
-# CSE Working Party two-standard-deviation acceptance limits (Eur. Heart J. 1985;6:815-825, Table 2;
-# as used by Martinez et al. 2004, IEEE TBME 51(4)). Defined for wave BOUNDARIES only; peaks and the
+# CSE Working Party two-standard-deviation acceptance limits (Eur. Heart J. 1985,6:815-825, Table 2
+# as used by Martinez et al. 2004, IEEE TBME 51(4)). Defined for wave BOUNDARIES only, peaks and the
 # T-onset have no CSE localization standard. Used here purely as a citable reference bound for the
 # inter-tool difference SD -- NOT to flag the review set (that stays on the coarse screening tolerance).
 CSE_2SD = {"p_onset": 10.2, "p_offset": 12.7, "qrs_onset": 6.5, "qrs_offset": 11.6, "t_offset": 30.6}

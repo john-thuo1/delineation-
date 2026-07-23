@@ -2,22 +2,22 @@
 """
 qc_review_list.py  -  Flag low-quality ECGdeli beats for manual review.
 
-Streams the ECGdeli fiducials CSV (works on the full 2.6M-row file) and writes:
+Streams the ECGdeli fiducials CSV (works on the full 2.6M-row file) and writes
   * medalcare_qc_review_list.csv     one row per CRITICAL (record, lead, beat) + reasons
   * medalcare_qc_record_summary.csv  one row per record (worst first)
 
-Severity tiers (a small tolerance ignores trivial boundary wobble):
-  CRITICAL  -> review/fix or exclude. Any of:
-      - structural: QRS-internal order wrong  (QRSon<Q<R<S<QRSoff violated > TOL)
+Severity tiers (a small tolerance ignores trivial boundary wobble)
+  CRITICAL  -> review/fix or exclude. Any of
+      - structural QRS-internal order wrong  (QRSon<Q<R<S<QRSoff violated > TOL)
       - QRSdur / QT / PR outside physiological range
       - gross boundary inversion > GROSS samples
       - R peak missing
-  MINOR     -> moderate P/T boundary inversion (TOL..GROSS samples); usually fine
+  MINOR     -> moderate P/T boundary inversion (TOL..GROSS samples), usually fine
   CLEAN     -> nothing, or inversion <= TOL samples (negligible)
 
 Only CRITICAL beats go in the review list, so manual effort is targeted.
 
-Usage:  python3 qc_review_list.py [fiducials.csv]
+Usage python3 qc_review_list.py [fiducials.csv]
 """
 import csv, sys, os
 from collections import Counter, defaultdict
@@ -32,8 +32,8 @@ REVIEW = os.path.join(OUTDIR, "medalcare_qc_review_list.csv")
 SUMMARY = os.path.join(OUTDIR, "medalcare_qc_record_summary.csv")
 
 # ---- thresholds ----
-TOL   = 3      # samples: ignore boundary inversions this small (<=6 ms @500Hz)
-GROSS = 20     # samples: boundary inversion above this (>40 ms) is critical
+TOL   = 3      # samples ignore boundary inversions this small (<=6 ms @500Hz)
+GROSS = 20     # samples boundary inversion above this (>40 ms) is critical
 QRS_MIN, QRS_MAX = 40, 200      # ms
 QT_MIN,  QT_MAX  = 250, 700     # ms
 PR_MIN,  PR_MAX  = 80, 400      # ms
@@ -49,9 +49,9 @@ def gi(r, k):
 review = []
 per_record = defaultdict(lambda: {"total": 0, "critical": 0, "minor": 0, "reasons": Counter(),
                                   "disease_class": "", "mi_subclass": "", "split": ""})
-# per (record, lead): a MedalCare-XL ECG repeats a common P/QRST template with beat-level RR
+# per (record, lead) a MedalCare-XL ECG repeats a common P/QRST template with beat-level RR
 # and repolarisation-timing variation, so the beats of a (record,lead) share one source morphology.
-# A lone flagged beat among clean siblings is a transient delineation glitch; a unit is only a
+# A lone flagged beat among clean siblings is a transient delineation glitch, a unit is only a
 # persistently flagged unit when a majority of its beats are flagged. Tracking this separates
 # persistent issues from transient per-beat glitches.
 per_rl = defaultdict(lambda: {"total": 0, "critical": 0, "disease_class": ""})
@@ -145,9 +145,9 @@ print("\nworst 5 records to review first:")
 for s in summ[:5]:
     print(f"  {s['record_id']:36s} {s['disease_class']:8s} {s['beats_critical']}/{s['beats_total']} ({100*s['frac_critical']:.0f}%)  {s['dominant_reason']}")
 
-# ---- per-(record,lead) view: separate persistently flagged units from transient per-beat glitches ----
+# ---- per-(record,lead) view separate persistently flagged units from transient per-beat glitches ----
 # Because each ECG repeats one source template, the meaningful unit is (record, lead). A unit is a
-# persistently flagged unit only if a majority (>=50%) of its beats are flagged; otherwise the flag is
+# persistently flagged unit only if a majority (>=50%) of its beats are flagged, otherwise the flag is
 # a transient glitch on an isolated beat of an otherwise-clean repeated morphology.
 PERSIST_FRAC = 0.5
 n_units = len(per_rl)

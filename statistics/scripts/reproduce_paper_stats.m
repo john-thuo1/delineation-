@@ -7,10 +7,10 @@
 % share one morphology and differ only in RR. To match the descriptor's per-ECG
 % feature extraction we therefore aggregate each feature to ONE value per record
 % (the median across that record's beats) before computing population statistics.
-% Timing features come from the labels; amplitude features are read from the raw
+% Timing features come from the labels, amplitude features are read from the raw
 % signal voltage at each peak relative to a per-beat isoelectric baseline.
 %
-% NOTE: this is a consistency check, not an accuracy check: the published
+% NOTE this is a consistency check, not an accuracy check the published
 % features were themselves extracted with ECGdeli, so agreement means our
 % relabelling reproduces the paper's pipeline, not that either is ground truth.
 
@@ -23,7 +23,7 @@ FS  = 500;  MS = 1000/FS;                 % 2 ms per sample
 LEADS = ["I","II","III","aVR","aVL","aVF","V1","V2","V3","V4","V5","V6"];
 N_AMP_REC = 200;                          % records sampled for amplitude stats
 
-% ---- Table 6 "sim" (healthy) means per lead: [Pdur QRSdur Tdur PQint QTint RRint] ----
+% ---- Table 6 "sim" (healthy) means per lead [Pdur QRSdur Tdur PQint QTint RRint] ----
 T6mu = [124.06 131.31 178.12 128.07 310.54 758.15;   % I
         128.09 126.10 182.33 127.18 317.08 758.02;   % II
         164.52 126.80 183.16 171.88 306.94 757.99;   % III
@@ -48,7 +48,7 @@ Tdur   = (T.t_offset_sample  - T.t_onset_sample ) * MS;
 PQint  = (T.qrs_onset_sample - T.p_onset_sample ) * MS;
 QTint  = (T.t_offset_sample  - T.qrs_onset_sample) * MS;
 
-% RR interval: consecutive R-peak difference within each (record, lead)
+% RR interval consecutive R-peak difference within each (record, lead)
 g  = findgroups(string(T.record_id), string(T.lead));
 RR = splitapply(@(x){[NaN; diff(x)]}, T.r_peak_sample, g);
 RRint = vertcat(RR{:}) * MS;

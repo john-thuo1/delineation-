@@ -2,13 +2,13 @@
 """
 build_fig6_amplitudes.py  -  Per-class amplitude contrasts for Figure 6 (healthy sinus vs disease,
 in the disease-relevant lead). amp = signal at the fiducial peak minus the pre-QRS baseline
-(median of the 12 samples ending at QRS onset); per-signal median over beats, then cohort mean.
+(median of the 12 samples ending at QRS onset), per-signal median over beats, then cohort mean.
 
-Sampling: a REPRODUCIBLE RANDOM sample of N per disease class, drawn without replacement from the
+Sampling a REPRODUCIBLE RANDOM sample of N per disease class, drawn without replacement from the
 sorted list of eligible records with a fixed seed (one sample per class, applied independently).
 
-Reads:  dataset_curation/data/assembled/master_labels.csv (peak positions), raw signals.
-Writes: statistics/data/fig6_amplitudes_by_class.csv
+Reads dataset_curation/data/assembled/master_labels.csv (peak positions), raw signals.
+Writes statistics/data/fig6_amplitudes_by_class.csv
 """
 import os, csv
 import numpy as np, pandas as pd
@@ -25,7 +25,7 @@ SEED = 2026
 
 LROW = {"I":0,"II":1,"III":2,"aVR":3,"aVL":4,"aVF":5,"V1":6,"V2":7,"V3":8,"V4":9,"V5":10,"V6":11}
 PKCOL = {"Pamp":"p_peak_sample","Qamp":"q_peak_sample","Ramp":"r_peak_sample"}
-# panels Figure 6 shows: (feature, lead, class)  (healthy = sinus in the same lead)
+# panels Figure 6 shows (feature, lead, class)  (healthy = sinus in the same lead)
 PANELS = [("Qamp","II","mi"), ("Ramp","V2","mi"), ("Ramp","II","lae"),
           ("Pamp","aVL","fam"), ("Pamp","V6","fam")]
 CLASSES = sorted({"sinus"} | {c for _,_,c in PANELS})

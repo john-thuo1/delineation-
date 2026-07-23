@@ -2,31 +2,31 @@
 % Auto-delineates the MedalCare-XL dataset with ECGdeli and writes fiducials
 % in the project "fiducials_per_lead" schema, with the disease class preserved.
 %
-%   ECGdeli takes an in-memory matrix, so we do NOT need to duplicate 27 GB: this script reads
+%   ECGdeli takes an in-memory matrix, so we do NOT need to duplicate 27 GB this script reads
 %   each original CSV, transposes it (the files are leads x samples, ECGdeli
 %   requires samples x leads), runs the delineator, and appends one row per
 %   beat-per-lead to a master CSV.
 %
 % REQUIREMENTS
-%   - MATLAB with: image, signal, statistics, wavelet toolboxes
-%   - ECGdeli toolbox:  https://github.com/KIT-IBT/ECGdeli   (clone it)
+%   - MATLAB with image, signal, statistics, wavelet toolboxes
+%   - ECGdeli toolbox https://github.com/KIT-IBT/ECGdeli   (clone it)
 %
 % HOW TO RUN
 %   1. Place this script and medalcare_manifest.csv in a folder inside the dataset
 %      root (the folder that contains WP2_largeDataset_Noise) and paths auto-resolve.
 %   2. Clone ECGdeli and set ECGDELI_PATH below to your clone.
-%   3. FIRST do a smoke test:  set END_IDX = 20 and inspect the output CSV.
+%   3. FIRST do a smoke test set END_IDX = 20 and inspect the output CSV.
 %   4. Then set END_IDX = Inf and run the full set.
 %
-% FPT (ECGdeli fiducial point table) column map used below:
+% FPT (ECGdeli fiducial point table) column map used below
 %   1=P-onset 2=P-peak 3=P-offset  4=QRS-onset 5=Q-peak 6=R-peak 7=S-peak
 %   8=QRS-offset  10=T-onset 11=T-peak 12=T-offset   (col 6 = R confirmed in
-%   Annotate_ECG_Multi; cols 1,3,4,12 confirmed in the MedalCare synthesis code)
+%   Annotate_ECG_Multi, cols 1,3,4,12 confirmed in the MedalCare synthesis code)
 
 clear; clc;
 
 %% ----------------------------- CONFIG -----------------------------------
-% Layout: this script lives at ecgdeli_labelling/scripts/. The repo root (which contains
+% Layout this script lives at ecgdeli_labelling/scripts/. The repo root (which contains
 % WP2_largeDataset_Noise and ECG_TOOL/ECGdeli) is two levels up. Only ECGDELI_PATH may need editing.
 SCRIPT_DIR    = fileparts(mfilename('fullpath'));                 % ecgdeli_labelling/scripts
 REPO_ROOT     = fileparts(fileparts(SCRIPT_DIR));                 % repo root (holds the signal files)
@@ -38,7 +38,7 @@ FAIL_LOG      = fullfile(REPO_ROOT,'ecgdeli_labelling','logs','ecgdeli_failures.
 SIGNAL_VER    = 'raw';        % 'raw' (clean, recommended) | 'filtered' | 'noise'
 APPLY_ISOLINE = true;         % ECGdeli isoline correction before annotation
 FS            = 500;
-START_IDX     = 1;            % process manifest rows START_IDX:END_IDX
+START_IDX     = 1;            % process manifest rows START_IDXEND_IDX
 END_IDX       = Inf;           % set to Inf for the full run after the smoke test
 %% ------------------------------------------------------------------------
 
@@ -47,7 +47,7 @@ assert(exist('Annotate_ECG_Multi','file')==2, ...
     'ECGdeli not on path. Set ECGDELI_PATH to the ECGdeli clone.');
 
 T = readtable(MANIFEST,'Delimiter',',','TextType','string');
-% empty string cells (e.g. mi_subclass for non-MI classes) read as <missing>;
+% empty string cells (e.g. mi_subclass for non-MI classes) read as <missing>
 % convert to "" so strjoin() works downstream
 for vn = string(T.Properties.VariableNames)
     if isstring(T.(vn)), T.(vn) = fillmissing(T.(vn),'constant',""); end
@@ -56,7 +56,7 @@ END_IDX = min(END_IDX, height(T));
 LEADS = ["I","II","III","aVR","aVL","aVF","V1","V2","V3","V4","V5","V6"];
 pathCol = char("path_" + SIGNAL_VER);
 
-% ---- resume: skip records already present in the output ----
+% ---- resume skip records already present in the output ----
 done = strings(0,1); writeHeader = true;
 if isfile(OUTPUT_CSV)
     try
@@ -109,16 +109,16 @@ for k = START_IDX:END_IDX
             fprintf(flog,'%s\tempty_FPT\n',rid); nFail=nFail+1; continue;
         end
 
-        % ECGdeli's own interval features, computed once from this record's FPT:
-        %   features_leadwise (L x B x 7): 1 Pdur 2 QRSdur 3 Tdur 4 PQ 5 PR 6 QT 7 RR
-        %   features_sync     (B x 8, cross-lead): 1 Pdur 2 QRSdur 3 Tdur 4 PQ 5 PR
+        % ECGdeli's own interval features, computed once from this record's FPT
+        %   features_leadwise (L x B x 7) 1 Pdur 2 QRSdur 3 Tdur 4 PQ 5 PR 6 QT 7 RR
+        %   features_sync     (B x 8, cross-lead) 1 Pdur 2 QRSdur 3 Tdur 4 PQ 5 PR
         %                                          6 QT 7 QTc(Framingham) 8 RR
         % We write BOTH sets to the CSV (columns ecgdeli_* and ecgdeli_sync_*). The
         % lead-wise QT (feature 6) also populates qt_interval_ms. NOTE the function
         % hard-codes 500 Hz (x2 ms/sample), which matches this dataset. If it is
         % unavailable or errors (e.g. leads with unequal beat counts) the lead-wise
         % columns fall back to our identical inline subtraction (verified 0.000 ms in
-        % verify_ecgdeli_qt.m); the cross-lead sync columns are ECGdeli-only.
+        % verify_ecgdeli_qt.m), the cross-lead sync columns are ECGdeli-only.
         try
             [features_leadwise, features_sync] = ExtractIntervalFeaturesFromFPT(FPT_Cell, FPT_MultiChannel);
         catch
@@ -143,7 +143,7 @@ for k = START_IDX:END_IDX
                 if b==size(fpt,1), be=n-1; else, be=floor((Rc(b)+Rc(b+1))/2)-1; end
                 % --- ECGdeli lead-wise interval features (ms) ---------------------
                 % intv() uses the ECGdeli value when available, else the identical
-                % inline subtraction; returns "" if either constituent fiducial is
+                % inline subtraction, returns "" if either constituent fiducial is
                 % absent, so undetected waves give empty cells (no spurious values).
                 ed_pdur = intv(lw(features_leadwise,L,b,1), Poff, Pon,   FS);   % P duration
                 ed_qrsd = intv(lw(features_leadwise,L,b,2), QRSoff,QRSon,FS);   % QRS duration
@@ -157,7 +157,7 @@ for k = START_IDX:END_IDX
                     elseif b > 1,        ed_rr = string(round((Rc(b)-Rc(b-1))*1000/FS,3)); end
                 end
                 % --- ECGdeli synchronized (cross-lead) features (ms) -------------
-                % Same value for every lead of a given beat; ECGdeli-only (no inline
+                % Same value for every lead of a given beat, ECGdeli-only (no inline
                 % fallback because they combine all 12 leads via its maxk/mink rule).
                 es_pdur = sy(features_sync,b,1); es_qrsd = sy(features_sync,b,2);
                 es_tdur = sy(features_sync,b,3); es_pq   = sy(features_sync,b,4);
@@ -172,7 +172,7 @@ for k = START_IDX:END_IDX
                     ms(Ton,FS),ms(Tpk,FS),ms(Toff,FS),"","","", ...
                     pres(Ppk),"1",pres(Tpk),"0", ...
                     "ecgdeli_auto","auto_uncorrected","ECGdeli PQRST; 0-based samples; U not detected", ...
-                    ed_qt, iv(Tpk,QRSon,FS), ...                       % qt_interval_ms (ECGdeli QT, to T-offset); qt_peak_ms (to T-peak)
+                    ed_qt, iv(Tpk,QRSon,FS), ...                       % qt_interval_ms (ECGdeli QT, to T-offset), qt_peak_ms (to T-peak)
                     ed_pdur,ed_qrsd,ed_tdur,ed_pq,ed_pr,ed_qt,ed_rr, ...           % ECGdeli lead-wise set
                     es_pdur,es_qrsd,es_tdur,es_pq,es_pr,es_qt,es_qtc,es_rr];       % ECGdeli synchronized (cross-lead) set
                 row(ismissing(row)) = "";        % replace any <missing> with ""

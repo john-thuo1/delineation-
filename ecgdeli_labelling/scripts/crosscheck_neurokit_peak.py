@@ -1,30 +1,34 @@
+#!/usr/bin/env python3
+# NOTE: retained ONLY to regenerate the ECGdeli-vs-NeuroKit2 comparison table in the
+# dissertation Appendix. NeuroKit2 is not part of the QC pipeline; QC uses the rule-based
+# screen and the cross-lead consistency check (see build_crosslead_priority.py).
 """
 crosscheck_neurokit_peak.py  -  NON-WAVELET third-opinion verification of the ECGdeli labels.
 
 This is the sibling of crosscheck_neurokit.py. That script uses NeuroKit2's DWT
-(wavelet) delineator; ECGdeli is also wavelet-based, so the two agreeing cannot
+(wavelet) delineator, ECGdeli is also wavelet-based, so the two agreeing cannot
 rule out a bias the wavelet family shares. This script instead runs NeuroKit2's
 "peak" delineator - a DERIVATIVE / local-extrema method from a different algorithm
 family (no wavelets) - and compares it to the ECGdeli labels the same way. Three
 independent method families (ECGdeli-wavelet, NeuroKit-wavelet, NeuroKit-derivative)
 agreeing on a fiducial is far stronger evidence than two wavelet tools agreeing.
 
-The peak method returns fewer fiducials than DWT: the P/Q/S/T PEAKS, the P-onset
+The peak method returns fewer fiducials than DWT the P/Q/S/T PEAKS, the P-onset
 and the T-offset. It does NOT return the QRS onset/offset or the T-onset (those
 boundaries are wavelet-only in NeuroKit2). That is fine here - the T-offset (the
 one biomarker where we differ from the paper) IS returned, so this check
 triangulates exactly the fiducial that matters most.
 
 Configuration (kept light on purpose - this is a method-family check, not a full
-per-beat consensus, so lead II across every record is sufficient and fast):
+per-beat consensus, so lead II across every record is sufficient and fast)
     N_PER_CLASS = None   -> every record (all 16,848)
     ALL_LEADS   = False  -> lead II only (set True for all 12 leads, much slower)
 
-Run:
+Run
     pip install neurokit2 numpy
     python3 crosscheck_neurokit_peak.py
 
-Outputs (this folder, named distinctly so they never collide with the DWT run):
+Outputs (this folder, named distinctly so they never collide with the DWT run)
     consensus_peak_agreement_summary.txt   per-fiducial agreement + median/mean offset
     consensus_peak_disagreements.csv       every beat where the tools differ > tolerance (with lead)
 """
@@ -46,8 +50,8 @@ FIDUCIALS = os.path.join(ROOT,"ecgdeli_labelling","data","primary","medalcare_fi
 XSUM      = os.path.join(ROOT,"ecgdeli_labelling","data","neurokit_crosscheck","summaries")
 XINT      = os.path.join(ROOT,"ecgdeli_labelling","data","neurokit_crosscheck","intermediates")
 os.makedirs(XSUM, exist_ok=True); os.makedirs(XINT, exist_ok=True)   # never lose a long run at write time
-N_PER_CLASS = None            # None = ALL records; or an int for a sample per class
-ALL_LEADS   = False           # False = lead II only (recommended); True = all 12 leads
+N_PER_CLASS = None            # None = ALL records, or an int for a sample per class
+ALL_LEADS   = False           # False = lead II only (recommended), True = all 12 leads
 SIGNAL_VER  = "raw"
 METHOD      = "peak"          # NON-wavelet (derivative / local-extrema) delineator
 FS          = 500
@@ -114,7 +118,7 @@ for rid, (path, cls) in sample.items():
                 v = arr[i] if i < len(arr) else np.nan
                 beat[k] = int(v) if (v == v and v is not None) else None
             nk_beats.append(beat)
-        used = set()                          # enforce one-to-one: each NeuroKit beat matches once
+        used = set()                          # enforce one-to-one each NeuroKit beat matches once
         for eb in edeli[(rid, ld)]:
             er = eb["r_peak"]
             if er is None or not nk_beats: continue
@@ -143,8 +147,8 @@ for rid, (path, cls) in sample.items():
         print(f"  {done}/{len(ids)} records  ({el:.0f}s, ~{el/done*len(ids)/60:.0f} min total)")
 
 # --- 5. write outputs (distinct peak-tagged names) ---
-# CSE Working Party two-standard-deviation acceptance limits (Eur. Heart J. 1985;6:815-825, Table 2).
-# For the peak method only the two boundaries P-onset and T-offset have a CSE limit; the peaks do not.
+# CSE Working Party two-standard-deviation acceptance limits (Eur. Heart J. 1985,6:815-825, Table 2).
+# For the peak method only the two boundaries P-onset and T-offset have a CSE limit, the peaks do not.
 CSE_2SD = {"p_onset": 10.2, "t_offset": 30.6}
 with open(os.path.join(XSUM, "consensus_peak_agreement_summary.txt"), "w") as f:
     def line(s=""): print(s); f.write(s+"\n")
